@@ -1,0 +1,22 @@
+{
+    "name": "kamilhurajt/awas-socket",
+    "type" : "library",
+    "keywords" : ["PHP", "Socket Server", "Socket client", "framework"],
+    "description" : "AWA Socket is fully scalable PHP socket server solution",
+    "authors" : [
+        {
+            "name"  : "Kamil Hurajt",
+            "email" : "hurajtk@gmail.com",
+            "homepage" : "https://github.com/kamilhurajt"
+        }
+    ],
+    "require-dev": {
+        "phpunit/phpunit": "^5.4"
+    },
+    "autoload" : {
+        "psr-4" : {
+            "AwaSocket\\"      : "src/",
+            "Tests\\" : "tests/"
+        }
+    }
+}
