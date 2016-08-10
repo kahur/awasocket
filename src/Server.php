@@ -2,9 +2,6 @@
 
 namespace AwaSocket;
 
-use AwaSocket\Socket\Server\SocketInterface;
-use AwaSocket\Server\ProtocolInterface;
-
 /**
  * Description of Server
  *
@@ -15,9 +12,9 @@ class Server implements Server\ServerInterface
 
     /**
      * Socket library
-     * @var SocketInterface
+     * @var Server\AdapterInterface
      */
-    protected $socket;
+    protected $adapter;
     protected $host;
     protected $port;
     protected $master;
@@ -27,10 +24,9 @@ class Server implements Server\ServerInterface
      */
     protected $eventManger;
 
-    public function __construct(SocketInterface $socket, Server\Adapter $adapter)
+    public function __construct(Server\AdapterInterface $adapter)
     {
-
-        $this->socket = $socket;
+        $this->adapter = $adapter;
     }
 
     public function restart()
@@ -46,11 +42,7 @@ class Server implements Server\ServerInterface
             $this->eventManger->fire('beforeStart', $this);
         }
 
-        $socket = $this->socket->create();
-        $this->master = $socket;
-
-        $this->socket->bind($this->master, $this->host, $this->port);
-        $this->socket->listen($this->master);
+        $this->adapter->run();
 
         if ($this->eventManger) {
             $this->eventManger->fire('afterStart', $this);
@@ -60,10 +52,10 @@ class Server implements Server\ServerInterface
     public function stop()
     {
         if ($this->eventManger) {
-            $this->eventManger->fire('beforeStop', $this, $this->master);
+            $this->eventManger->fire('beforeStop', $this, $this);
         }
 
-        $this->socket->close($this->master);
+        $this->adapter->stop();
 
         if ($this->eventManger) {
             $this->eventManger->fire('afterStop', $this);
@@ -86,7 +78,7 @@ class Server implements Server\ServerInterface
      */
     public function getSocket()
     {
-        return $this->socket;
+        return $this->adapter;
     }
 
 }

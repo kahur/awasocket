@@ -1,7 +1,9 @@
 <?php
 
+namespace Tests\Server\Adapter;
+
 use PHPUnit\Framework\TestCase;
-use AwaSocket\Socket;
+use AwaSocket\Server\Adapter\Socket;
 
 /**
  * Description of SocketTest

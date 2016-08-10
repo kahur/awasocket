@@ -32,4 +32,6 @@ interface SocketInterface extends \AwaSocket\SocketInterface
      * @return resource|false accepted socket
      */
     public function accept($socket);
+
+    public function select(array $sockets);
 }
