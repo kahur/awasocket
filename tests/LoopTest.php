@@ -76,12 +76,12 @@ class LoopTest extends TestCase
     public function testTimeout()
     {
         $loop = new \AwaSocket\Loop();
-        $loop->setTimeout(2);
+        $loop->setTimeout(1);
         $loop->run();
 
         $time = $loop->getRuntime()->getRuntime();
 
-        $this->assertTrue(($time >= 2));
+        $this->assertTrue(($time >= 1));
     }
 
     public function testSleep()
@@ -98,15 +98,15 @@ class LoopTest extends TestCase
             $mock->fire();
         });
 
-        $loop->setTimeout(2);
-        $loop->setSleepTime(2);
+        $loop->setTimeout(1);
+        $loop->setSleepTime(1);
         $start = time();
         $loop->run();
         $end = time();
 
         $runtime = $end - $start;
 
-        $this->assertEquals(2, $runtime);
+        $this->assertEquals(1, $runtime);
     }
 
 }
