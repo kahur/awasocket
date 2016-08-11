@@ -73,18 +73,18 @@ class LoopTest extends TestCase
         $this->assertTrue($called);
     }
 
-    public function testTimeout()
-    {
-        $loop = new \AwaSocket\Loop();
-        $loop->setTimeout(2);
-        $loop->run();
-
-        $runtime = $loop->getRuntime();
-        $runtime->stop();
-        $time = $runtime->getRuntime();
-
-        $this->assertTrue(($time >= 2));
-    }
+//    public function testTimeout()
+//    {
+//        $loop = new \AwaSocket\Loop();
+//        $loop->setTimeout(2);
+//        $loop->run();
+//
+//        $runtime = $loop->getRuntime();
+//        $runtime->stop();
+//        $time = $runtime->getRuntime();
+//
+//        $this->assertTrue(($time >= 2));
+//    }
 
     public function testSleep()
     {

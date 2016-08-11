@@ -33,5 +33,22 @@ interface SocketInterface extends \AwaSocket\SocketInterface
      */
     public function accept($socket);
 
+    /**
+     * Select sockets with activity
+     * @param resource[] $sockets
+     */
     public function select(array $sockets);
+
+    /**
+     * Read from socket
+     * @param resource $socket
+     */
+    public function read($socket);
+
+    /**
+     * Write to socket
+     * @param resource $socket
+     * @param string $message
+     */
+    public function write($socket, $message);
 }

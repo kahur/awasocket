@@ -29,6 +29,9 @@ class Server implements Server\ServerInterface
         $this->adapter = $adapter;
     }
 
+    /**
+     * Restart server
+     */
     public function restart()
     {
         $this->stop();
@@ -36,6 +39,12 @@ class Server implements Server\ServerInterface
         $this->start();
     }
 
+    /**
+     * Start server
+     * @events
+     * - beforeStart($event, $server)
+     * - afterStart($event, $server)
+     */
     public function start()
     {
         if ($this->eventManger) {
@@ -49,10 +58,16 @@ class Server implements Server\ServerInterface
         }
     }
 
+    /**
+     * Stop server
+     * @events
+     * - beforeStop($event, $server)
+     * - afterStop($event, $server)
+     */
     public function stop()
     {
         if ($this->eventManger) {
-            $this->eventManger->fire('beforeStop', $this, $this);
+            $this->eventManger->fire('beforeStop', $this);
         }
 
         $this->adapter->stop();
@@ -62,11 +77,19 @@ class Server implements Server\ServerInterface
         }
     }
 
+    /**
+     * Get events manager
+     * @return Events\ManagerInterface Description
+     */
     public function getEventManger()
     {
         return $this->eventManger;
     }
 
+    /**
+     * Set events manager
+     * @param Events\ManagerInterface $manager
+     */
     public function setEventManager(Events\ManagerInterface $manager)
     {
         $this->eventManger = $manager;

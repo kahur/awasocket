@@ -13,9 +13,18 @@ use AwaSocket\Server\Adapter\Socket;
 class SocketTest extends TestCase
 {
 
+    protected $loop;
+
+    public function setUp()
+    {
+        $loop = $this->getMockBuilder('\AwaSocket\Loop\LoopInterface')->getMock();
+
+        $this->loop = $loop;
+    }
+
     public function testCreate()
     {
-        $sock = new Socket();
+        $sock = new Socket($this->loop);
         $master = $sock->create();
 
         $this->assertTrue(is_resource($master));
@@ -29,7 +38,7 @@ class SocketTest extends TestCase
 
     public function testBind()
     {
-        $sock = new Socket();
+        $sock = new Socket($this->loop);
         $master = $sock->create();
 
         //bind socket
@@ -43,7 +52,7 @@ class SocketTest extends TestCase
     public function testConnect()
     {
         //create server to listen
-        $sock = new Socket();
+        $sock = new Socket($this->loop);
 
         $master = $sock->create(array('blocking' => false));
         $sock->bind($master, '127.0.0.1', 5000);
@@ -51,7 +60,7 @@ class SocketTest extends TestCase
 
         $socket = $sock->accept($master);
 
-        $s = new Socket();
+        $s = new Socket($this->loop);
         $socket2 = $s->create();
         $connection = $s->connect($socket2, '127.0.0.1', 5000);
 
@@ -63,7 +72,7 @@ class SocketTest extends TestCase
 
     public function testClose()
     {
-        $sock = new Socket();
+        $sock = new Socket($this->loop);
         $master = $sock->create();
 
         $this->assertTrue(is_resource($master));
@@ -71,6 +80,58 @@ class SocketTest extends TestCase
         socket_close($master);
 
         $this->assertFalse(is_resource($master));
+    }
+
+    public function testWrite()
+    {
+        $sock = new Socket($this->loop);
+
+        $master = $sock->create(array('blocking' => false));
+        $sock->bind($master, '127.0.0.1', 5000);
+        $sock->listen($master);
+
+        $socket = $sock->accept($master);
+
+        $s = new Socket($this->loop);
+        $socket2 = $s->create();
+        $s->connect($socket2, '127.0.0.1', 5000);
+//
+        $t = $s->write($socket2, 'Test');
+//
+        $this->assertEquals(strlen('Test'), $t);
+
+        $sock->close($master);
+        $sock->close($socket2);
+    }
+
+    public function testRead()
+    {
+        $sock = new Socket($this->loop);
+
+        $master = $sock->create(array('blocking' => false));
+        $sock->bind($master, '127.0.0.1', 5000);
+        $sock->listen($master);
+
+        $socket = $sock->accept($master);
+
+        $s = new Socket($this->loop);
+        $socket2 = $s->create();
+        $s->connect($socket2, '127.0.0.1', 5000);
+
+        socket_set_nonblock($socket2);
+        $t = $s->write($socket2, 'Test');
+
+        $socks = array($master);
+
+        $selected = $sock->select($socks);
+
+        $accept = $sock->accept($selected[0]);
+
+        $message = $sock->read($accept);
+        $this->assertEquals('Test', $message);
+
+        $sock->close($master);
+        $sock->close($socket2);
     }
 
 }

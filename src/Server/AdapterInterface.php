@@ -12,11 +12,23 @@ use AwaSocket\Events\ManagerInterface;
 interface AdapterInterface
 {
 
+    /**
+     * Run
+     */
     public function run();
 
+    /**
+     * Stop
+     */
     public function stop();
 
+    /**
+     * Set events manager
+     */
     public function setEventsManager(ManagerInterface $eventManager);
 
+    /**
+     * Get events manager
+     */
     public function getEventsManager();
 }

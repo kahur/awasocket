@@ -13,7 +13,7 @@ interface LoopInterface
 
     public function getTimeout();
 
-    public function addEvent($eventName, $handler);
+    public function addEvent($eventName, $handler, &$data = null);
 
     public function removeEvent($eventName);
 

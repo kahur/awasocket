@@ -13,6 +13,11 @@ class Manager implements ManagerInterface
     protected $_listeners = array();
     protected $_firedEvents = [];
 
+    /**
+     * Attach handler to eventType
+     * @param string $eventType
+     * @param \Closure|Object $handler closure to call, object with event methods if method in object does not exist event will not be fired
+     */
     public function attach($eventType, $handler)
     {
         if (!isset($this->_listeners[$eventType])) {
@@ -24,6 +29,12 @@ class Manager implements ManagerInterface
         }
     }
 
+    /**
+     * Remove handler from event
+     * @param string $eventType
+     * @param \Closure|Object $handler
+     * @return boolean
+     */
     public function detach($eventType, $handler)
     {
         $listeners = $this->getListeners($eventType);
@@ -38,6 +49,11 @@ class Manager implements ManagerInterface
         return false;
     }
 
+    /**
+     * Remove all events or all events by type
+     * @param string|null $eventType
+     * @return boolean
+     */
     public function detachAll($eventType = null)
     {
         if (!$eventType) {
@@ -54,6 +70,14 @@ class Manager implements ManagerInterface
         return false;
     }
 
+    /**
+     * Fire handlers listening on eventType
+     * @param string $type
+     * @param Object $source source object where fire was called
+     * @param mixed $data
+     *
+     * @return Event[] list of fired events
+     */
     public function fire($type, $source, $data = null)
     {
         $listeners = $this->getListeners($type);
@@ -85,6 +109,11 @@ class Manager implements ManagerInterface
         return $this->_firedEvents;
     }
 
+    /**
+     * Get handlers by event type
+     * @param string $type
+     * @return Object[]|\Closure[] list of handlers
+     */
     public function getListeners($type)
     {
         return (isset($this->_listeners[$type])) ? $this->_listeners[$type] : [];
