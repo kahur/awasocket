@@ -2,7 +2,7 @@
 Multi-thread fully scalable socket library
 # Installation
 ```sh
-$ git clone git@gitlab.89109.nl:pukkr/web-socket.git
+$ git clone https://github.com/kamilhurajt/awasocket.git
 $ cd web-socket
 $ composer update
 ```
