@@ -23,7 +23,7 @@ class LoopTest extends TestCase
 
         $this->assertNotEmpty($event);
 
-        $value = $event();
+        $value = $event['call']();
 
         $this->assertEquals('test', $value);
     }
@@ -73,18 +73,16 @@ class LoopTest extends TestCase
         $this->assertTrue($called);
     }
 
-//    public function testTimeout()
-//    {
-//        $loop = new \AwaSocket\Loop();
-//        $loop->setTimeout(2);
-//        $loop->run();
-//
-//        $runtime = $loop->getRuntime();
-//        $runtime->stop();
-//        $time = $runtime->getRuntime();
-//
-//        $this->assertTrue(($time >= 2));
-//    }
+    public function testTimeout()
+    {
+        $loop = new \AwaSocket\Loop();
+        $loop->setTimeout(2);
+        $loop->run();
+
+        $time = $loop->getRuntime()->getRuntime();
+
+        $this->assertTrue(($time >= 2));
+    }
 
     public function testSleep()
     {
