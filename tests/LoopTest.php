@@ -23,7 +23,7 @@ class LoopTest extends TestCase
 
         $this->assertNotEmpty($event);
 
-        $value = $event();
+        $value = $event['call']();
 
         $this->assertEquals('test', $value);
     }
