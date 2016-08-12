@@ -1,3 +1,5 @@
+![alt tag](https://travis-ci.org/kamilhurajt/awasocket.svg?branch=master)
+
 # Socket Server library
 Multi-thread fully scalable socket library
 # Installation
