@@ -3,15 +3,20 @@
 namespace AwaSocket\Plugin;
 
 use AwaSocket\Events\Event;
+use AwaSocket\Events\ManagerInjectInterface;
+use AwaSocket\Events\ManagerInterface;
 
 /**
  * Description of WebSocket
- *
+ * @todo comment
  * @author Kamil Hurajt <hurajtk@gmail.com>
  */
-class WebSocket implements \AwaSocket\PluginInterface
+class WebSocket implements \AwaSocket\PluginInterface, ManagerInjectInterface
 {
 
+    /**
+     * @var ManagerInterface
+     */
     protected $eventsManager;
 
     /**
@@ -50,7 +55,14 @@ class WebSocket implements \AwaSocket\PluginInterface
         $socketObject = $event->getSource();
 
         $client = $this->getClientBySocket($socket);
-        $client->disconnect();
+        if ($client) {
+            $client->disconnect();
+        }
+
+        $message = WebSocket\Helper\Message::encode(3000, 'close');
+        $socketObject->write($socket, $message);
+
+
         $this->removeClient($client);
         unset($client);
     }
@@ -59,21 +71,21 @@ class WebSocket implements \AwaSocket\PluginInterface
     {
         $data = $event->getData();
         $socket = $data[0];
+        $client = $this->getClientBySocket($socket);
+        $socketClass = $event->getSource();
+
         $message = $data[1];
 
-        $client = $this->getClientBySocket($socket);
         if (!$client->hasHandshake()) {
-            $handshake = new WebSocket\Helper\Handshake($message);
+            if ($this->eventsManager) {
+                $this->eventsManager->fire('beforeHandshake', $socketClass, array($message, $client, $socket));
+            }
 
-            $socketClass = $event->getSource();
-
-            if ($handshake->version !== 13) {
-                $socketClass->write($socket, 'Client does not support web socket v 13');
-                $socketClass->close($socket);
-                $client->disconnect();
-            } else {
-                $client->setHandshake(true);
-                $socketClass->write($socket, $handshake->getUpgradeHeader());
+            $this->handshake($client, $socketClass, $socket, $message);
+        } else {
+            $message = WebSocket\Helper\Message::decode($message);
+            if ($this->eventsManager) {
+                $this->eventsManager->fire('websocket:message', $this, array($message, $event));
             }
         }
     }
@@ -112,6 +124,29 @@ class WebSocket implements \AwaSocket\PluginInterface
         $key = array_search($socket, $this->sockets);
 
         return $this->clients[$key];
+    }
+
+    public function handshake(WebSocket\Client $client, \AwaSocket\Socket\Server\SocketInterface $socketClass, $socket, $headers)
+    {
+        $handshake = new WebSocket\Helper\Handshake($headers);
+        if ($handshake->version !== 13) {
+            $socketClass->write($socket, 'Client does not support web socket v 13');
+            $socketClass->close($socket);
+            $client->disconnect();
+        } else {
+            $client->setHandshake(true);
+            $socketClass->write($socket, $handshake->getUpgradeHeader());
+        }
+    }
+
+    public function getEventsManager()
+    {
+        return $this->eventsManager;
+    }
+
+    public function setEventsManager(ManagerInterface $eventsManager)
+    {
+        $this->eventsManager = $eventsManager;
     }
 
 }

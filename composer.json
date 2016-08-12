@@ -18,5 +18,8 @@
             "AwaSocket\\"      : "src/",
             "Tests\\" : "tests/"
         }
+    },
+    "require": {
+        "firebase/php-jwt": "^4.0"
     }
 }

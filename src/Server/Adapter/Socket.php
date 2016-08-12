@@ -167,7 +167,6 @@ class Socket implements SocketInterface, AdapterInterface
             if ($msg == '') {
                 break;
             } else if ($bytes === 0) {
-                echo "Disconnecting\n";
                 return false;
             }
 

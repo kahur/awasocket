@@ -11,6 +11,7 @@ class Client
 {
 
     protected $id;
+    protected $user;
     protected $handshake = false;
     protected $socket;
     protected $pid;
@@ -74,6 +75,16 @@ class Client
             $loop = $loop->create();
             $loop->run();
         }
+    }
+
+    public function setUser($user)
+    {
+        $this->user = $user;
+    }
+
+    public function getUser()
+    {
+        return $this->user;
     }
 
     public function __destruct()

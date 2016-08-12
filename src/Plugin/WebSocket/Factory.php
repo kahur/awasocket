@@ -15,6 +15,8 @@ class Factory
 
     public static function create(WebSocket $websocket, ManagerInterface $eventManager)
     {
+        $websocket->setEventsManager($eventManager);
+
         $events = array(
             'join',
             'disconnect',
