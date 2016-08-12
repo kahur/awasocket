@@ -89,12 +89,10 @@ class Manager implements ManagerInterface
 
         foreach ($listeners as $listener) {
             if (is_object($listener) && !$listener instanceof \Closure) {
-
-
                 if (method_exists($listener, $t)) {
                     $event = new Event($type, $source, $data);
 
-                    $result = $listener->{$type}($event, $source, $data);
+                    $result = $listener->{$t}($event, $source, $data);
 
                     $event->setResult($result);
 
