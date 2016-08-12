@@ -81,10 +81,17 @@ class Manager implements ManagerInterface
     public function fire($type, $source, $data = null)
     {
         $listeners = $this->getListeners($type);
+        $t = $type;
+        if (strpos($type, ':') !== false) {
+            $types = explode(":", $type);
+            $t = end($types);
+        }
 
         foreach ($listeners as $listener) {
             if (is_object($listener) && !$listener instanceof \Closure) {
-                if (method_exists($listener, $type)) {
+
+
+                if (method_exists($listener, $t)) {
                     $event = new Event($type, $source, $data);
 
                     $result = $listener->{$type}($event, $source, $data);

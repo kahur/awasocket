@@ -85,7 +85,7 @@ class WebSocket implements \AwaSocket\PluginInterface, ManagerInjectInterface
         } else {
             $message = WebSocket\Helper\Message::decode($message);
             if ($this->eventsManager) {
-                $this->eventsManager->fire('websocket:message', $this, array($message, $event));
+                $this->eventsManager->fire('websocket:message', $this, array($message, $client, $event));
             }
         }
     }
