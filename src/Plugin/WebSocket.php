@@ -35,6 +35,7 @@ class WebSocket implements \AwaSocket\PluginInterface
         $clientSocket = $event->getData();
 
         $client = $this->getClientBySocket($clientSocket);
+
         if (!$client) {
             $client = new WebSocket\Client(uniqid(), $clientSocket);
             $client->process($this->loop);
@@ -61,6 +62,20 @@ class WebSocket implements \AwaSocket\PluginInterface
         $message = $data[1];
 
         $client = $this->getClientBySocket($socket);
+        if (!$client->hasHandshake()) {
+            $handshake = new WebSocket\Helper\Handshake($message);
+
+            $socketClass = $event->getSource();
+
+            if ($handshake->version !== 13) {
+                $socketClass->write($socket, 'Client does not support web socket v 13');
+                $socketClass->close($socket);
+                $client->disconnect();
+            } else {
+                $client->setHandshake(true);
+                $socketClass->write($socket, $handshake->getUpgradeHeader());
+            }
+        }
     }
 
     public function addClient(WebSocket\Client $client)
