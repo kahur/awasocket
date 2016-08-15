@@ -92,7 +92,7 @@ class Manager implements ManagerInterface
                 if (method_exists($listener, $t)) {
                     $event = new Event($type, $source, $data);
 
-                    $result = $listener->{$type}($event, $source, $data);
+                    $result = $listener->{$t}($event, $source, $data);
 
                     $event->setResult($result);
 
