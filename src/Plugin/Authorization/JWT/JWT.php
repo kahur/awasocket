@@ -7,7 +7,7 @@ namespace AwaSocket\Plugin\Authorization\JWT;
  *
  * @author Kamil Hurajt <hurajtk@gmail.com>
  */
-class JWT extends Firebase\JWT\JWT
+class JWT extends \Firebase\JWT\JWT
 {
 
     public static function decode($jwt, $key, $allowed_algs = array())
