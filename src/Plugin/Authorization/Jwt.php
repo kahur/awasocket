@@ -29,7 +29,7 @@ class Jwt implements \AwaSocket\PluginInterface
         $token = $match[1];
 
         $key = base64_decode(self::SECRET);
-        $jwt = \Firebase\JWT\JWT::decode($token, $key, array("HS512"));
+        $jwt = JWT\JWT::decode($token, $key, array("HS512"));
 
         $user = $jwt->data->userId;
 
